@@ -1,75 +1,64 @@
-// Loading Animation
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        const loading = document.getElementById('loading');
-        loading.style.opacity = '0';
-        setTimeout(() => {
-            loading.style.display = 'none';
-        }, 500);
-    }, 2000);
-});
+// DOM Elements
+const navToggle = document.querySelector('.nav-toggle');
+const navMenu = document.querySelector('.nav-menu');
+const genie = document.getElementById('genie');
 
-// Custom Cursor
-document.addEventListener('DOMContentLoaded', () => {
-    const cursor = document.getElementById('cursor');
+// Matrix Rain Effect
+function createMatrixRain() {
+    const canvas = document.getElementById('matrix-canvas');
+    const ctx = canvas.getContext('2d');
 
-    document.addEventListener('mousemove', (e) => {
-        cursor.style.left = e.clientX + 'px';
-        cursor.style.top = e.clientY + 'px';
-    });
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-    document.addEventListener('mousedown', () => {
-        cursor.classList.add('active');
-    });
+    const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()_+-=[]{}|;:,.<>?";
+    const matrixArray = matrix.split("");
 
-    document.addEventListener('mouseup', () => {
-        cursor.classList.remove('active');
-    });
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = [];
 
-    // Add hover effects for interactive elements
-    const interactiveElements = document.querySelectorAll('a, button, .fish-card, .activity-card, .map-marker');
-
-    interactiveElements.forEach(el => {
-        el.addEventListener('mouseenter', () => cursor.classList.add('active'));
-        el.addEventListener('mouseleave', () => cursor.classList.remove('active'));
-    });
-});
-
-// Water Particles Animation
-function createParticles() {
-    const heroSection = document.getElementById('hero');
-    const particlesContainer = document.getElementById('particles');
-    const particleCount = 50;
-
-    for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.animationDelay = Math.random() * 8 + 's';
-        particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
-        particlesContainer.appendChild(particle);
+    for (let x = 0; x < columns; x++) {
+        drops[x] = 1;
     }
+
+    function draw() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = '#00ff00';
+        ctx.font = fontSize + 'px monospace';
+
+        for (let i = 0; i < drops.length; i++) {
+            const text = matrixArray[Math.floor(Math.random() * matrixArray.length)];
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        }
+    }
+
+    setInterval(draw, 35);
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
 }
 
-createParticles();
+createMatrixRain();
 
-// Ambient Sound Toggle
-const soundToggle = document.getElementById('sound-toggle');
-const ambientSound = document.getElementById('ambient-sound');
-let soundEnabled = false;
+// Navigation Toggle
+if (navToggle) {
+    navToggle.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+        navToggle.classList.toggle('active');
+    });
+}
 
-soundToggle.addEventListener('click', () => {
-    soundEnabled = !soundEnabled;
-    if (soundEnabled) {
-        ambientSound.play();
-        soundToggle.textContent = '🔊';
-    } else {
-        ambientSound.pause();
-        soundToggle.textContent = '🔇';
-    }
-});
-
-// Smooth Scrolling for Navigation
+// Smooth Scrolling for Navigation Links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
@@ -80,233 +69,21 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 block: 'start'
             });
         }
-    });
-});
-
-// Mobile Menu Toggle
-const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-const mobileMenu = document.getElementById('mobile-menu');
-
-mobileMenuToggle.addEventListener('click', () => {
-    mobileMenu.classList.toggle('hidden');
-});
-
-// Header Background Change on Scroll
-window.addEventListener('scroll', () => {
-    const nav = document.querySelector('nav');
-    if (window.scrollY > 100) {
-        nav.style.background = 'rgba(0, 0, 0, 0.95)';
-        nav.style.backdropFilter = 'blur(20px)';
-    } else {
-        nav.style.background = 'rgba(0, 0, 0, 0.5)';
-        nav.style.backdropFilter = 'blur(10px)';
-    }
-});
-
-// Scroll-Triggered Animations
-function animateOnScroll() {
-    const elements = document.querySelectorAll('.container > *');
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, { threshold: 0.1 });
-
-    elements.forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(50px)';
-        el.style.transition = 'all 0.6s ease';
-        observer.observe(el);
-    });
-}
-
-animateOnScroll();
-
-// Fish Card Hover Effects
-document.querySelectorAll('.fish-card').forEach(card => {
-    card.addEventListener('mouseenter', () => {
-        card.style.transform = 'translateY(-10px) scale(1.05)';
-    });
-
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = 'translateY(0) scale(1)';
-    });
-});
-
-// Activity Card Hover Effects
-document.querySelectorAll('#adventure .bg-green-900').forEach(card => {
-    const icon = card.querySelector('div:first-child');
-    card.addEventListener('mouseenter', () => {
-        icon.style.transform = 'scale(1.2) rotate(10deg)';
-    });
-
-    card.addEventListener('mouseleave', () => {
-        icon.style.transform = 'scale(1) rotate(0deg)';
-    });
-});
-
-// Jungle Map Interactions
-document.querySelectorAll('.map-marker').forEach(marker => {
-    marker.addEventListener('mouseenter', () => {
-        marker.style.transform = 'scale(1.5)';
-    });
-
-    marker.addEventListener('mouseleave', () => {
-        marker.style.transform = 'scale(1)';
-    });
-});
-
-// Gallery Lightbox
-const galleryImages = document.querySelectorAll('#gallery img');
-const lightbox = document.createElement('div');
-lightbox.className = 'lightbox';
-lightbox.innerHTML = '<span class="close">&times;</span><img src="" alt="">';
-document.body.appendChild(lightbox);
-
-const lightboxImg = lightbox.querySelector('img');
-const closeBtn = lightbox.querySelector('.close');
-
-galleryImages.forEach(img => {
-    img.addEventListener('click', () => {
-        lightboxImg.src = img.src;
-        lightbox.classList.add('active');
-    });
-});
-
-closeBtn.addEventListener('click', () => {
-    lightbox.classList.remove('active');
-});
-
-lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) {
-        lightbox.classList.remove('active');
-    }
-});
-
-// Review Slider
-let currentReview = 0;
-const reviews = document.querySelectorAll('#reviews .bg-green-800');
-const totalReviews = reviews.length;
-
-function showReview(index) {
-    reviews.forEach(review => review.classList.remove('review-slide'));
-    reviews[index].classList.add('review-slide');
-}
-
-function nextReview() {
-    currentReview = (currentReview + 1) % totalReviews;
-    showReview(currentReview);
-}
-
-// Auto-slide reviews every 5 seconds
-setInterval(nextReview, 5000);
-
-// Contact Form Handling
-const contactForm = document.querySelector('#contact form');
-
-contactForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    alert('Thank you for your message! We will get back to you soon.');
-    contactForm.reset();
-});
-
-// WhatsApp Function
-function openWhatsApp() {
-    const phoneNumber = '916375202840';
-    const message = 'I want to book Rawt Aqua Farm & Jungle Retreat';
-    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
-}
-
-// Parallax Effect
-window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
-    const heroBg = document.querySelector('#hero video');
-    if (heroBg) {
-        heroBg.style.transform = `translateY(${scrolled * 0.5}px)`;
-    }
-});
-
-// Leaf Animation
-function createLeaves() {
-    const leafCount = 10;
-    for (let i = 0; i < leafCount; i++) {
-        const leaf = document.createElement('div');
-        leaf.className = 'leaf';
-        leaf.style.left = Math.random() * 100 + '%';
-        leaf.style.animationDelay = Math.random() * 10 + 's';
-        leaf.style.animationDuration = (Math.random() * 5 + 10) + 's';
-        document.body.appendChild(leaf);
-    }
-}
-
-createLeaves();
-
-// Firefly Animation
-function createFireflies() {
-    const fireflyCount = 20;
-    for (let i = 0; i < fireflyCount; i++) {
-        const firefly = document.createElement('div');
-        firefly.className = 'firefly';
-        firefly.style.left = Math.random() * 100 + '%';
-        firefly.style.top = Math.random() * 100 + '%';
-        firefly.style.animationDelay = Math.random() * 3 + 's';
-        document.body.appendChild(firefly);
-    }
-}
-
-createFireflies();
-
-// Fog Animation
-function createFog() {
-    const fog = document.createElement('div');
-    fog.className = 'fog';
-    document.body.appendChild(fog);
-}
-
-createFog();
-
-// Responsive Menu Close on Link Click
-document.querySelectorAll('#mobile-menu a').forEach(link => {
-    link.addEventListener('click', () => {
-        mobileMenu.classList.add('hidden');
-    });
-});
-
-// Window Resize Handler
-window.addEventListener('resize', () => {
-    if (window.innerWidth > 768) {
-        mobileMenu.classList.add('hidden');
-    }
-});
-
-// Performance Optimization: Debounce Scroll Events
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-window.addEventListener('scroll', debounce(() => {
-    // Scroll-triggered functions can be added here
-}, 16));
-
-// Accessibility: Keyboard Navigation for Gallery
-document.addEventListener('keydown', (e) => {
-    if (lightbox.classList.contains('active')) {
-        if (e.key === 'Escape') {
-            lightbox.classList.remove('active');
+        // Close mobile menu if open
+        if (navMenu.classList.contains('active')) {
+            navMenu.classList.remove('active');
+            navToggle.classList.remove('active');
         }
+    });
+});
+
+// Navbar Background Change on Scroll
+window.addEventListener('scroll', () => {
+    const navbar = document.querySelector('.navbar');
+    if (window.scrollY > 100) {
+        navbar.style.background = 'rgba(0, 0, 0, 0.95)';
+    } else {
+        navbar.style.background = 'rgba(0, 0, 0, 0.8)';
     }
 });
 
@@ -319,58 +96,409 @@ const observerOptions = {
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            entry.target.classList.add('animate-in');
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
         }
     });
 }, observerOptions);
 
-// Observe elements for animation
-document.querySelectorAll('.animate-on-scroll').forEach(el => {
-    observer.observe(el);
+// Observe all sections
+document.querySelectorAll('.section').forEach(section => {
+    section.style.opacity = '0';
+    section.style.transform = 'translateY(20px)';
+    section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(section);
 });
 
-// Add animate-on-scroll class to elements
-document.querySelectorAll('#about, #fish, #stay, #adventure, #map, #gallery, #reviews, #location, #contact, #safety').forEach(section => {
-    section.classList.add('animate-on-scroll');
+// Gallery Lightbox
+const galleryImages = document.querySelectorAll('.gallery-grid img');
+galleryImages.forEach(img => {
+    img.addEventListener('click', () => {
+        const lightbox = document.createElement('div');
+        lightbox.style.position = 'fixed';
+        lightbox.style.top = '0';
+        lightbox.style.left = '0';
+        lightbox.style.width = '100%';
+        lightbox.style.height = '100%';
+        lightbox.style.background = 'rgba(0, 0, 0, 0.8)';
+        lightbox.style.display = 'flex';
+        lightbox.style.alignItems = 'center';
+        lightbox.style.justifyContent = 'center';
+        lightbox.style.zIndex = '9999';
+        lightbox.style.cursor = 'pointer';
+
+        const imgClone = img.cloneNode();
+        imgClone.style.maxWidth = '90%';
+        imgClone.style.maxHeight = '90%';
+        imgClone.style.objectFit = 'contain';
+
+        lightbox.appendChild(imgClone);
+        document.body.appendChild(lightbox);
+
+        lightbox.addEventListener('click', () => {
+            document.body.removeChild(lightbox);
+        });
+    });
 });
 
 // Form Validation
-document.querySelectorAll('#contact input, #contact select, #contact textarea').forEach(field => {
-    field.addEventListener('blur', () => {
-        if (field.value.trim() === '') {
-            field.style.borderColor = '#ef4444';
-        } else {
-            field.style.borderColor = '#10b981';
+const contactForm = document.querySelector('.contact-form');
+if (contactForm) {
+    contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const name = contactForm.querySelector('input[type="text"]').value;
+        const phone = contactForm.querySelector('input[type="tel"]').value;
+        const visitType = contactForm.querySelector('select').value;
+        const date = contactForm.querySelector('input[type="date"]').value;
+        const message = contactForm.querySelector('textarea').value;
+
+        if (!name || !phone || !visitType || !date) {
+            alert('Please fill in all required fields.');
+            return;
         }
-    });
-});
 
-// Dynamic Year in Footer
-document.addEventListener('DOMContentLoaded', () => {
-    const year = new Date().getFullYear();
-    const copyright = document.querySelector('footer p');
-    if (copyright) {
-        copyright.innerHTML = copyright.innerHTML.replace('2024', year);
-    }
-});
-
-// Service Worker Registration (for PWA capabilities)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => console.log('SW registered'))
-            .catch(error => console.log('SW registration failed'));
+        // Here you would typically send the form data to a server
+        alert('Thank you for your booking request! We will contact you soon.');
+        contactForm.reset();
     });
 }
 
-// Error Handling
-window.addEventListener('error', (e) => {
-    console.error('An error occurred:', e.error);
+// Genie Assistant Functionality
+if (genie) {
+    let genieClicks = 0;
+    const messages = [
+        "Welcome to Rawat Aqua Jungle Retreat! 🌿",
+        "Explore our magical jungle paradise! ✨",
+        "Discover the wonders of nature with us! 🐟",
+        "Your adventure awaits! 🌟"
+    ];
+
+    genie.addEventListener('click', () => {
+        genieClicks = (genieClicks + 1) % messages.length;
+
+        // Speak the message if speech synthesis is supported
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(messages[genieClicks]);
+            utterance.pitch = 1.2;
+            utterance.rate = 0.9;
+            utterance.volume = 0.8;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Visual feedback
+        genie.style.transform = 'scale(1.2)';
+        setTimeout(() => {
+            genie.style.transform = 'scale(1)';
+        }, 200);
+
+        // Add sparkle effect
+        const sparkle = document.createElement('div');
+        sparkle.textContent = '✨';
+        sparkle.style.position = 'absolute';
+        sparkle.style.fontSize = '2rem';
+        sparkle.style.pointerEvents = 'none';
+        sparkle.style.animation = 'sparkle-pop 0.5s ease-out';
+        sparkle.style.zIndex = '1001';
+        genie.appendChild(sparkle);
+
+        setTimeout(() => {
+            if (genie.contains(sparkle)) {
+                genie.removeChild(sparkle);
+            }
+        }, 500);
+    });
+
+    // Gentle random movements
+    setInterval(() => {
+        const randomX = Math.random() * 10 - 5;
+        const randomY = Math.random() * 10 - 5;
+        genie.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        setTimeout(() => {
+            genie.style.transform = 'translate(0, 0)';
+        }, 2000);
+    }, 5000);
+
+    // React to scroll
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        if (scrolled > 500) {
+            genie.style.opacity = '0.7';
+        } else {
+            genie.style.opacity = '1';
+        }
+    });
+}
+
+// Custom Cursor
+const cursor = document.createElement('div');
+cursor.className = 'cursor';
+document.body.appendChild(cursor);
+
+document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX - 10 + 'px';
+    cursor.style.top = e.clientY - 10 + 'px';
 });
 
-// Prevent right-click on images (optional)
-document.addEventListener('contextmenu', (e) => {
-    if (e.target.tagName === 'IMG') {
-        e.preventDefault();
+document.addEventListener('mousedown', () => {
+    cursor.style.transform = 'scale(0.8)';
+});
+
+document.addEventListener('mouseup', () => {
+    cursor.style.transform = 'scale(1)';
+});
+
+// Loading Animation
+window.addEventListener('load', () => {
+    const loading = document.getElementById('loading');
+    if (loading) {
+        loading.style.opacity = '0';
+        setTimeout(() => {
+            loading.style.display = 'none';
+        }, 500);
     }
+});
+
+// Parallax Effect for Hero
+window.addEventListener('scroll', () => {
+    const scrolled = window.pageYOffset;
+    const heroVideo = document.querySelector('.hero-video');
+    if (heroVideo) {
+        heroVideo.style.transform = `translateY(${scrolled * 0.5}px)`;
+    }
+});
+
+// WhatsApp Integration
+function openWhatsApp() {
+    const phone = "+919876543210";
+    const message = "Hi, I'm interested in booking a visit to Rawat Aqua Jungle Retreat.";
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+}
+
+// Add CSS for sparkle animation
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes sparkle-pop {
+        0% {
+            opacity: 1;
+            transform: scale(0);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.5);
+        }
+        100% {
+            opacity: 0;
+            transform: scale(2);
+        }
+    }
+`;
+document.head.appendChild(style);
+
+// Terminal Functionality
+function initTerminal() {
+    const terminal = document.getElementById('terminal');
+    const terminalInput = document.getElementById('terminal-input');
+    const terminalOutput = document.querySelector('.terminal-output');
+    const terminalClose = document.querySelector('.terminal-close');
+    const terminalMinimize = document.querySelector('.terminal-minimize');
+
+    let isMinimized = false;
+
+    // Toggle terminal visibility with Ctrl+`
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === '`') {
+            e.preventDefault();
+            terminal.style.display = terminal.style.display === 'block' ? 'none' : 'block';
+            if (terminal.style.display === 'block') {
+                terminalInput.focus();
+            }
+        }
+    });
+
+    // Close terminal
+    terminalClose.addEventListener('click', () => {
+        terminal.style.display = 'none';
+    });
+
+    // Minimize terminal
+    terminalMinimize.addEventListener('click', () => {
+        if (isMinimized) {
+            terminal.style.height = '300px';
+            terminal.querySelector('.terminal-body').style.display = 'block';
+            isMinimized = false;
+        } else {
+            terminal.style.height = '30px';
+            terminal.querySelector('.terminal-body').style.display = 'none';
+            isMinimized = true;
+        }
+    });
+
+    // Terminal commands
+    const commands = {
+        help: () => {
+            return `Available commands:
+help - Show this help
+about - About Rawt Aqua Farm
+fish - List fish varieties
+stay - Stay information
+adventure - Adventure packages
+contact - Contact information
+clear - Clear terminal
+exit - Close terminal
+hack - Access hidden features`;
+        },
+        about: () => {
+            return `Rawt Aqua Farm & Jungle Retreat
+Location: Aravali Hills, Rajasthan
+Features: Natural spring-water ponds, 90+ fish varieties, Jungle trails, Eco-friendly farming`;
+        },
+        fish: () => {
+            return `Premium Fish Varieties:
+- Arowana: Rare & Expensive (₹50,000 - ₹2,00,000)
+- Koi: Local Freshwater (₹5,000 - ₹25,000)
+- Rohu XXL: Breeding Pairs (₹10,000 - ₹50,000)
+- Golden Catla: Custom Orders (₹3,000 - ₹15,000)`;
+        },
+        stay: () => {
+            return `Jungle Stay Options:
+- Luxury Tents / Bamboo Huts
+- Pure Natural Water Pool
+- Bonfire Zone
+- Night Camping
+- Bird Watching Morning Walk`;
+        },
+        adventure: () => {
+            return `Adventure Packages:
+- Night Jungle Safari
+- Mountain Trekking
+- River Crossing
+- Archery & Survival Training
+- Fishing Experience
+- Firefly Watching`;
+        },
+        contact: () => {
+            return `Contact Information:
+Phone: +91 98765 43210
+Email: info@rawtaquafarm.com
+Location: Aravali Hills, Rajasthan`;
+        },
+        clear: () => {
+            terminalOutput.innerHTML = '';
+            return '';
+        },
+        exit: () => {
+            terminal.style.display = 'none';
+            return '';
+        },
+        save: () => {
+            const output = Array.from(terminalOutput.children).map(p => p.textContent).join('\n');
+            const blob = new Blob([output], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'terminal-output.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            return 'Terminal output saved to terminal-output.txt';
+        }
+    };
+
+    // Typing animation function
+    function typeText(element, text, speed = 50) {
+        let i = 0;
+        element.classList.add('typing');
+        element.textContent = '';
+
+        function type() {
+            if (i < text.length) {
+                element.textContent += text.charAt(i);
+                i++;
+                setTimeout(type, speed);
+            } else {
+                element.classList.remove('typing');
+            }
+        }
+        type();
+    }
+
+    terminalInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const command = terminalInput.value.trim().toLowerCase();
+            const output = document.createElement('p');
+            output.textContent = `> ${terminalInput.value}`;
+            terminalOutput.appendChild(output);
+
+            if (commands[command]) {
+                const result = commands[command]();
+                if (result) {
+                    const resultOutput = document.createElement('p');
+                    terminalOutput.appendChild(resultOutput);
+                    typeText(resultOutput, result, 30);
+                }
+            } else if (command !== '') {
+                const errorOutput = document.createElement('p');
+                errorOutput.style.color = '#ff4444';
+                terminalOutput.appendChild(errorOutput);
+                typeText(errorOutput, `Command not found: ${command}. Type 'help' for available commands.`, 30);
+            }
+
+            terminalInput.value = '';
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        }
+    });
+}
+
+// Loading Screen Functionality
+function initLoadingScreen() {
+    const loading = document.getElementById('loading');
+    const loadingBar = document.getElementById('loading-bar');
+    const loadingText = document.getElementById('loading-text');
+
+    const loadingMessages = [
+        'Loading Rawt Aqua Jungle Retreat...',
+        'Initializing Matrix Protocol...',
+        'Connecting to Jungle Network...',
+        'Loading Environmental Data...',
+        'Activating Genie AI...',
+        'System Ready!'
+    ];
+
+    let messageIndex = 0;
+    let progress = 0;
+
+    const loadingInterval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress > 100) progress = 100;
+
+        loadingBar.style.width = progress + '%';
+
+        if (progress > (messageIndex + 1) * 100 / loadingMessages.length) {
+            messageIndex++;
+            if (messageIndex < loadingMessages.length) {
+                loadingText.textContent = loadingMessages[messageIndex];
+            }
+        }
+
+        if (progress >= 100) {
+            clearInterval(loadingInterval);
+            setTimeout(() => {
+                loading.style.opacity = '0';
+                setTimeout(() => {
+                    loading.style.display = 'none';
+                }, 500);
+            }, 500);
+        }
+    }, 100);
+}
+
+// Initialize everything when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    initLoadingScreen();
+    initTerminal();
+    console.log('Rawat Aqua Jungle Retreat website loaded successfully!');
+    console.log('Press Ctrl+` to open terminal interface');
 });

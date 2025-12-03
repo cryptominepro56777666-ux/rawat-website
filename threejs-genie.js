@@ -1,3 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Genie Demo Preview</title>
+  <style>
+    body {
+      margin: 0;
+      background: #022; /* jungle dark */
+      height: 200vh;
+      overflow-x: hidden;
+      color: white;
+      font-family: Arial;
+    }
+    #genie {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #4ff 0%, #08a 70%);
+      box-shadow: 0 0 25px #4ff;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-15px); }
+      100% { transform: translateY(0px); }
+    }
+    .section {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      text-shadow: 0 0 10px black;
+    }
+  </style>
+</head>
+<body>
+
+<div id="genie"></div>
+
+<div class="section" style="background:#033">Section 1: Arrival</div>
+<div class="section" style="background:#044">Section 2: Jungle Story</div>
+
+<script>
+  const story = [
+    "Greetings, traveler… Welcome to Rawt Aqua Farm…",
+    "Follow me deeper into the ancient jungle…"
+  ];
+
+  const synth = window.speechSynthesis;
+  let spoken = [false, false];
+
+  // Floating random movement
+  const genie = document.getElementById('genie');
+  function moveGenie() {
+    const x = Math.random() * (window.innerWidth - 150);
+    const y = Math.random() * (window.innerHeight - 150);
+    genie.style.transition = 'transform 4s ease-in-out';
+    genie.style.transform = `translate(${x}px, ${y}px)`;
+  }
+  setInterval(moveGenie, 4000);
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry)=>{
+      if(entry.isIntersecting){
+        const index = [...document.querySelectorAll('.section')].indexOf(entry.target);
+        if(!spoken[index]){
+          const utter = new SpeechSynthesisUtterance(story[index]);
+          utter.pitch = 0.7;
+          utter.rate = 0.85;
+          synth.speak(utter);
+          spoken[index] = true;
+        }
+      }
+    })
+  },{threshold:0.6});
+
+  document.querySelectorAll('.section').forEach(sec=>observer.observe(sec));
+</script>
+
+</body>
+</html>
 // Three.js Genie Character
 class GenieCharacter {
     constructor(canvasId) {

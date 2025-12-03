@@ -1,86 +1,446 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Genie Demo Preview</title>
-  <style>
-    body {
-      margin: 0;
-      background: #022; /* jungle dark */
-      height: 200vh;
-      overflow-x: hidden;
-      color: white;
-      font-family: Arial;
-    }
-    #genie {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #4ff 0%, #08a 70%);
-      box-shadow: 0 0 25px #4ff;
-      animation: float 3s ease-in-out infinite;
-    }
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-15px); }
-      100% { transform: translateY(0px); }
-    }
-    .section {
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      text-shadow: 0 0 10px black;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rawt Aqua Farm & Jungle Retreat</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/Tween.min.js"></script>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div id="loading" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+    ">
+        <div style="
+            font-size: 3rem;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 2rem;
+        ">INITIALIZING SYSTEM</div>
+        <div id="loading-text" style="
+            font-size: 1.2rem;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+        ">Loading Rawt Aqua Jungle Retreat...</div>
+        <div style="
+            width: 300px;
+            height: 4px;
+            background: #333;
+            margin-top: 2rem;
+            border-radius: 2px;
+            overflow: hidden;
+        ">
+            <div id="loading-bar" style="
+                height: 100%;
+                background: linear-gradient(90deg, #00ff00, #00aa00);
+                width: 0%;
+                transition: width 2s ease;
+            "></div>
+        </div>
+    </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">Rawt Aqua Farm & Co.</div>
+            <ul class="nav-menu">
+                <li><a href="#s1">Home</a></li>
+                <li><a href="#s2">About</a></li>
+                <li><a href="#s3">Fish</a></li>
+                <li><a href="#s4">Stay</a></li>
+                <li><a href="#s5">Adventure</a></li>
+                <li><a href="#s6">Map</a></li>
+                <li><a href="#s7">Gallery</a></li>
+                <li><a href="#s8">Reviews</a></li>
+                <li><a href="#s9">Location</a></li>
+                <li><a href="#s10">Contact</a></li>
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
 
-<div id="genie"></div>
+    <!-- Hero Section -->
+    <section id="s1" class="hero">
+        <video autoplay muted loop class="hero-video">
+            <source src="assets/hero.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">Rawt Aqua Farm & Jungle Retreat</h1>
+            <p class="hero-subtitle">Where Water, Wilderness & Wildlife Meet</p>
+            <div class="hero-buttons">
+                <a href="#stay" class="btn btn-primary">Book Jungle Stay</a>
+                <a href="#fish" class="btn btn-secondary">Explore Fish Varieties</a>
+                <a href="#adventure" class="btn btn-accent">Plan Your Adventure</a>
+            </div>
+        </div>
+    </section>
 
-<div class="section" style="background:#033">Section 1: Arrival</div>
-                    <li><a href="#contact" class="hover:text-green-400 transition-colors">Contact</a></li>
+    <!-- About Section -->
+    <section id="s2" class="section about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-image">
+                    <img src="assets/fish.jpg" alt="Natural pond and jungle">
+                </div>
+                <div class="about-content">
+                    <h2 class="section-title">About Our Farm</h2>
+                    <ul class="about-list">
+                        <li>🌿 Natural spring-water fish ponds in pristine jungle environment</li>
+                        <li>🐟 90+ premium fish varieties including Koi, Arowana, Rohu XXL, Golden Catla</li>
+                        <li>🌳 Untouched forest environment with guided jungle trails</li>
+                        <li>♻️ Eco-grown, chemical-free habitat for sustainable fish farming</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<script>
-  const story = [
-    "Greetings, traveler… Welcome to Rawt Aqua Farm…",
-    "Follow me deeper into the ancient jungle…"
-  ];
+    <!-- Fish Showcase -->
+    <section id="s3" class="section fish">
+        <div class="container">
+            <h2 class="section-title">Premium Fish Showcase</h2>
+            <div class="fish-grid">
+                <div class="fish-card">
+                    <img src="assets/fish.jpg" alt="Arowana">
+                    <div class="fish-content">
+                        <h3>Arowana</h3>
+                        <p>Rare & Expensive Varieties</p>
+                        <span class="price">₹50,000 - ₹2,00,000</span>
+                    </div>
+                </div>
+                <div class="fish-card">
+                    <img src="assets/fish.jpg" alt="Koi">
+                    <div class="fish-content">
+                        <h3>Koi</h3>
+                        <p>Local Freshwater Varieties</p>
+                        <span class="price">₹5,000 - ₹25,000</span>
+                    </div>
+                </div>
+                <div class="fish-card">
+                    <img src="assets/fish.jpg" alt="Rohu XXL">
+                    <div class="fish-content">
+                        <h3>Rohu XXL</h3>
+                        <p>Breeding Pairs</p>
+                        <span class="price">₹10,000 - ₹50,000</span>
+                    </div>
+                </div>
+                <div class="fish-card">
+                    <img src="assets/fish.jpg" alt="Golden Catla">
+                    <div class="fish-content">
+                        <h3>Golden Catla</h3>
+                        <p>Custom Fish Orders</p>
+                        <span class="price">₹3,000 - ₹15,000</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  const synth = window.speechSynthesis;
-  let spoken = [false, false];
+    <!-- Jungle Stay -->
+    <section id="s4" class="section stay">
+        <div class="stay-bg"></div>
+        <div class="container">
+            <h2 class="section-title">Jungle Stay Experience</h2>
+            <div class="stay-grid">
+                <div class="stay-card">
+                    <div class="stay-icon">🏕️</div>
+                    <h3>Luxury Tents / Bamboo Huts</h3>
+                    <p>Comfortable stays surrounded by wilderness</p>
+                </div>
+                <div class="stay-card">
+                    <div class="stay-icon">🏊</div>
+                    <h3>Pure Natural Water Pool</h3>
+                    <p>Swim in crystal-clear spring water</p>
+                </div>
+                <div class="stay-card">
+                    <div class="stay-icon">🔥</div>
+                    <h3>Bonfire Zone</h3>
+                    <p>Gather around for stories and warmth</p>
+                </div>
+                <div class="stay-card">
+                    <div class="stay-icon">🌙</div>
+                    <h3>Night Camping</h3>
+                    <p>Experience the jungle after dark</p>
+                </div>
+                <div class="stay-card">
+                    <div class="stay-icon">🐦</div>
+                    <h3>Bird Watching Morning Walk</h3>
+                    <p>Wake up to nature's symphony</p>
+                </div>
+                <div class="stay-card">
+                    <a href="#contact" class="btn btn-primary">Book Stay Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  // Floating random movement
-  const genie = document.getElementById('genie');
-  function moveGenie() {
-    const x = Math.random() * (window.innerWidth - 150);
-    const y = Math.random() * (window.innerHeight - 150);
-    genie.style.transition = 'transform 4s ease-in-out';
-    genie.style.transform = `translate(${x}px, ${y}px)`;
-  }
-  setInterval(moveGenie, 4000);
+    <!-- Adventure Zone -->
+    <section id="s5" class="section adventure">
+        <div class="container">
+            <h2 class="section-title">Adventure Zone</h2>
+            <div class="adventure-grid">
+                <div class="adventure-card">
+                    <div class="adventure-icon">🌙</div>
+                    <h3>Night Jungle Safari</h3>
+                    <p>Explore the jungle under the stars with expert guides</p>
+                </div>
+                <div class="adventure-card">
+                    <div class="adventure-icon">🏔️</div>
+                    <h3>Mountain Trekking</h3>
+                    <p>Conquer the Aravali peaks and enjoy panoramic views</p>
+                </div>
+                <div class="adventure-card">
+                    <div class="adventure-icon">🌊</div>
+                    <h3>River Crossing</h3>
+                    <p>Cross natural streams and experience adventure</p>
+                </div>
+                <div class="adventure-card">
+                    <div class="adventure-icon">🏹</div>
+                    <h3>Archery & Survival Training</h3>
+                    <p>Learn ancient skills in a modern setting</p>
+                </div>
+                <div class="adventure-card">
+                    <div class="adventure-icon">🎣</div>
+                    <h3>Fishing Experience</h3>
+                    <p>Catch and release in our natural ponds</p>
+                </div>
+                <div class="adventure-card">
+                    <div class="adventure-icon">✨</div>
+                    <h3>Firefly Watching</h3>
+                    <p>Witness nature's living lights</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry)=>{
-      if(entry.isIntersecting){
-        const index = [...document.querySelectorAll('.section')].indexOf(entry.target);
-        if(!spoken[index]){
-          const utter = new SpeechSynthesisUtterance(story[index]);
-          utter.pitch = 0.7;
-          utter.rate = 0.85;
-          synth.speak(utter);
-          spoken[index] = true;
-        }
-      }
-    })
-  },{threshold:0.6});
+    <!-- Interactive Map -->
+    <section id="s6" class="section map">
+        <div class="container">
+            <h2 class="section-title">Interactive Jungle Map</h2>
+            <div class="map-container">
+                <img src="assets/camp.jpg" alt="Jungle Map" class="map-image">
+                <div class="map-marker" data-tooltip="Entry Gate" style="top: 20%; left: 20%;"></div>
+                <div class="map-marker" data-tooltip="Fish Ponds" style="top: 30%; right: 30%;"></div>
+                <div class="map-marker" data-tooltip="Jungle Trail" style="bottom: 30%; left: 30%;"></div>
+                <div class="map-marker" data-tooltip="Camping Area" style="bottom: 20%; right: 20%;"></div>
+                <div class="map-marker" data-tooltip="Water Spring" style="top: 50%; left: 50%;"></div>
+            </div>
+        </div>
+    </section>
 
-  document.querySelectorAll('.section').forEach(sec=>observer.observe(sec));
-</script>
+    <!-- Gallery -->
+    <section id="s7" class="section gallery">
+        <div class="container">
+            <h2 class="section-title">Gallery</h2>
+            <div class="gallery-grid">
+                <img src="assets/pic1.jpg" alt="Jungle atmosphere">
+                <img src="assets/pic2.jpg" alt="Fish varieties">
+                <img src="assets/pic3.jpg" alt="Guest stay">
+                <img src="assets/pic4.jpg" alt="Night safari">
+                <img src="assets/pic5.jpg" alt="Drone shots">
+                <img src="assets/pic6.jpg" alt="Jungle trails">
+            </div>
+        </div>
+    </section>
 
+    <!-- Reviews -->
+    <section id="s8" class="section reviews">
+        <div class="container">
+            <h2 class="section-title">Customer Reviews</h2>
+            <div class="reviews-grid">
+                <div class="review-card">
+                    <div class="review-header">
+                        <img src="assets/pic1.jpg" alt="Rahul Sharma">
+                        <div>
+                            <h4>Rahul Sharma</h4>
+                            <div class="stars">★★★★★</div>
+                        </div>
+                    </div>
+                    <p>An incredible experience! The fish varieties are stunning and the jungle stay was unforgettable.</p>
+                </div>
+                <div class="review-card">
+                    <div class="review-header">
+                        <img src="assets/pic2.jpg" alt="Priya Patel">
+                        <div>
+                            <h4>Priya Patel</h4>
+                            <div class="stars">★★★★★</div>
+                        </div>
+                    </div>
+                    <p>The night safari was magical. Waking up to bird calls was pure bliss.</p>
+                </div>
+                <div class="review-card">
+                    <div class="review-header">
+                        <img src="assets/pic3.jpg" alt="Amit Kumar">
+                        <div>
+                            <h4>Amit Kumar</h4>
+                            <div class="stars">★★★★★</div>
+                        </div>
+                    </div>
+                    <p>Perfect blend of adventure and relaxation. The fish farming is impressive.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location -->
+    <section id="s9" class="section location">
+        <div class="container">
+            <h2 class="section-title">Location & Route</h2>
+            <div class="location-grid">
+                <div class="location-map">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.123456789012!2d77.1234567!3d28.1234567!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjjCsDA3JzI0LjQiTiA3N8KwMDcnMjQuMyJF!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+                <div class="location-info">
+                    <h3>How to Reach Us</h3>
+                    <p>Located in the heart of the Aravali hills, easily accessible by multiple modes of transport.</p>
+                    <ul>
+                        <li><strong>By Car:</strong> 2 hours from Jaipur</li>
+                        <li><strong>By Train:</strong> Nearest station Jaipur Junction</li>
+                        <li><strong>By Bus:</strong> Direct buses from major cities</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary">Get Directions</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact & Booking -->
+    <section id="s10" class="section contact">
+        <div class="container">
+            <h2 class="section-title">Contact & Booking</h2>
+            <form class="contact-form">
+                <div class="form-row">
+                    <input type="text" placeholder="Name" required>
+                    <input type="tel" placeholder="Phone" required>
+                </div>
+                <select required>
+                    <option value="">Select Visit Type</option>
+                    <option value="fish">Fish Viewing</option>
+                    <option value="stay">Jungle Stay</option>
+                    <option value="adventure">Adventure Package</option>
+                </select>
+                <input type="date" required>
+                <textarea placeholder="Message" rows="4" required></textarea>
+                <div class="form-buttons">
+                    <button type="button" class="btn btn-secondary">📞 Call Now</button>
+                    <button type="submit" class="btn btn-primary">Book Now</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Safety -->
+    <section id="safety" class="section safety">
+        <div class="container">
+            <h2 class="section-title">Safety & Rules</h2>
+            <div class="safety-grid">
+                <div class="safety-card">
+                    <h3>Our Safety Measures</h3>
+                    <ul>
+                        <li>✓ Trained jungle guides accompany all groups</li>
+                        <li>✓ Restricted hunting - photography only</li>
+                        <li>✓ Safety gear included for all activities</li>
+                        <li>✓ Medical support available 24/7</li>
+                    </ul>
+                </div>
+                <div class="safety-card">
+                    <h3>Jungle Etiquette</h3>
+                    <ul>
+                        <li>🌿 Stay on designated paths</li>
+                        <li>♻️ Carry back all waste</li>
+                        <li>📸 Respect wildlife - no feeding</li>
+                        <li>🔇 Keep noise levels low</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>Rawt Aqua Farm & Company</h3>
+                    <p>Where water, wilderness & wildlife meet in perfect harmony.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#fish">Fish Varieties</a></li>
+                        <li><a href="#stay">Jungle Stay</a></li>
+                        <li><a href="#adventure">Adventures</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contact</h4>
+                    <p>+91 98765 43210</p>
+                    <p>info@rawtaquafarm.com</p>
+                    <p>Aravali Hills, Rajasthan</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Rawt Aqua Farm. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Matrix Canvas -->
+    <canvas id="matrix-canvas"></canvas>
+
+    <!-- Terminal Interface -->
+    <div id="terminal" class="terminal">
+        <div class="terminal-header">
+            <span class="terminal-title">Rawt Aqua System Terminal</span>
+            <div class="terminal-controls">
+                <span class="terminal-minimize">_</span>
+                <span class="terminal-maximize">□</span>
+                <span class="terminal-close">×</span>
+            </div>
+        </div>
+        <div class="terminal-body">
+            <div class="terminal-output">
+                <p>> Initializing Rawt Aqua Jungle Retreat System...</p>
+                <p>> Loading environmental data...</p>
+                <p>> Connecting to wildlife network...</p>
+                <p>> System ready. Type 'help' for commands.</p>
+            </div>
+            <div class="terminal-input-line">
+                <span class="terminal-prompt">root@rawt-aqua:~# </span>
+                <input type="text" id="terminal-input" class="terminal-input" autofocus>
+            </div>
+        </div>
+    </div>
+
+    <!-- Genie Assistant -->
+    <div id="genie" class="genie">
+        <div class="genie-sparkle">⚡</div>
+    </div>
+
+    <script src="threejs-genie.js"></script>
+    <script src="genie.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
